@@ -14,16 +14,12 @@ import Header from "../components/Header"
 
 function Login() {
     const navigate = useNavigate()
-    const [showPassword, setShowPassword] = useState(false)
+    // const [showPassword, setShowPassword] = useState(false)
     const [formValue, setFormValue] = useState({
         email: "",
         password: ""
     })
-    // HandleClick
-    function handleClick() {
-        setShowPassword(true)
-        // console.log("ShowPassword:", showPassword)
-    }
+
     // HandleChange
     function HandleChange(event) {
         const { name, value } = event.target
@@ -34,13 +30,13 @@ function Login() {
             }
         })
     }
-    //HandleSignIn
-    const handleSignIn = async () => {
+    //Handle Login
+    const handleLogIn = async () => {
         try {
             const { email, password } = formValue
             // const auth = getAuth()
             await signInWithEmailAndPassword(firebaseAuth, email, password)
-            console.log("Successfully register")
+            console.log("Successfully Login")
 
             // clear input value
             setFormValue({
@@ -48,14 +44,16 @@ function Login() {
                 password: ""
             })
         } catch (err) {
-            console.log(err)
+            console.error(err)
+            console.log("Check your Email or Password")
+
         }
     }
     // Get the currently signed-in user
     onAuthStateChanged(firebaseAuth, (currentUser) => {
         if (currentUser) {
-            const uid = currentUser.uid
-            console.log(uid)
+            // const uid = currentUser.uid
+            // console.log(uid)
             navigate("/")
         }
         // navigate to homePage
@@ -63,16 +61,34 @@ function Login() {
     })
 
 
-    return <StyledContainer showPassword={showPassword}>
+    return <StyledContainer>
         <BackgroundImage />
         <div className="content">
             <Header />
-            <div className="form-container flex-column a-center j-center">
+            <div className="form-container flex column a-center j-center">
                 <div className="form flex column a-center j-center">
                     <div className="title">
                         <h3>Login</h3>
                     </div>
-                    <div class="container flex column"></div>
+                    <div className="container flex column">
+                        <input
+                            type="email"
+                            placeholder="Email Address"
+                            name="email"
+                            value={formValue.email}
+                            onChange={HandleChange}
+                        />
+
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            name="password"
+                            value={formValue.password}
+                            onChange={HandleChange}
+                        />
+
+                        <button onClick={handleLogIn}>Log In</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,7 +98,7 @@ function Login() {
 
 
 const StyledContainer = styled.div`
-position: relative;
+    position: relative;
   .content {
     position: absolute;
     top: 0;
@@ -90,55 +106,41 @@ position: relative;
     background-color: rgba(0, 0, 0, 0.5);
     height: 100vh;
     width: 100vw;
-    display: grid;
     grid-template-rows: 15vh 85vh;
-    .body {
-      gap: 1rem;
-      .text {
-        gap: 1rem;
-        text-align: center;
-        font-size: 2rem;
-        h1 {
-          padding: 0 25rem;
+    .form-container{
+        gap: 2rem;
+        height: 85vh;
+        .form {
+            padding: 2rem;
+            background-color: #000000b0;
+            width: 30vw;
+            gap: 2rem;
+            color: white;
+            .container{
+                gap: 2rem;
+                width: 100%;
+                input{
+                    padding: 0.5rem 1rem;
+                    width: 100%;
+                }
+                input:focus{
+                        outline: none;
+                    }
+                button{
+                    padding: 0.5rem 1rem;
+                    background-color: #e50914;
+                    border: none;
+                    cursor: pointer;
+                    color: white;
+                    border-radius: 0.2rem;
+                    font-weight: bolder;
+                    font-size: 1.05rem;
+                }
+            }
         }
-      }
-      .form {
-        display: grid;
-        grid-template-columns: ${({ showPassword }) =>
-        showPassword ? "1fr 1fr" : "2fr 1fr"};
-        width: 60%;
-        input {
-          color: black;
-          border: none;
-          padding: 1rem;
-          font-size: 1.2rem;
-          border: 1px solid black;
-          &:focus {
-            outline: none;
-          }
-        }
-        button {
-          padding: 0.5rem 1rem;
-          background-color: #e50914;
-          border: none;
-          cursor: pointer;
-          color: white;
-          font-weight: bolder;
-          font-size: 1.05rem;
-        }
-      }
-      button {
-        padding: 0.5rem 1rem;
-        background-color: #e50914;
-        border: none;
-        cursor: pointer;
-        color: white;
-        border-radius: 0.2rem;
-        font-weight: bolder;
-        font-size: 1.05rem;
-      }
     }
   }
+  
 `;
 
 
